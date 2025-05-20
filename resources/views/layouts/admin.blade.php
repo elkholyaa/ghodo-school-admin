@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Ghodo School Admin') }}</title>
 
+    <!-- jQuery needs to be loaded before Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- Vite Assets -->
     @vite([
         'resources/css/app.css',
@@ -14,10 +17,81 @@
         'resources/js/app_admin.js',
         'resources/backend/adminlte/dist/adminlte.min.css',
         'resources/backend/adminlte/dist/bootstrap.min.css',
-        'resources/backend/adminlte/dist/all.min.css',
+        'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
     ])
+    
+    <!-- Additional RTL styles -->
+    <style>
+        /* Override for RTL fixes */
+        body {
+            text-align: right;
+        }
+        body:not(.layout-fixed) .main-sidebar {
+            right: 0;
+        }
+        .navbar-nav {
+            padding-right: 0;
+        }
+        .content-wrapper, .main-footer, .main-header {
+            margin-right: 250px;
+            margin-left: 0;
+        }
+        @media (max-width: 991.98px) {
+            .content-wrapper, .main-footer, .main-header {
+                margin-right: 0;
+            }
+            body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, 
+            body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, 
+            body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+                margin-right: 0 !important;
+            }
+        }
+        .navbar-nav.ml-auto {
+            margin-right: auto !important;
+            margin-left: 0 !important;
+        }
+        .text-right {
+            text-align: left !important;
+        }
+        .text-left {
+            text-align: right !important;
+        }
+        
+        /* Fix for sidebar text alignment */
+        .nav-sidebar>.nav-item {
+            text-align: right;
+        }
+        .nav-sidebar .nav-link p {
+            text-align: right;
+        }
+        .nav-sidebar .nav-icon {
+            margin-left: 0.2rem;
+            margin-right: -0.2rem;
+        }
+        
+        /* Dashboard content alignment */
+        .container-fluid h1, 
+        .container-fluid .h1,
+        .container-fluid p,
+        .breadcrumb-item,
+        .small-box-footer,
+        .small-box p {
+            text-align: right;
+        }
+        
+        /* Fix icon positioning */
+        .small-box-footer i,
+        .nav-link i {
+            margin-left: 5px;
+            margin-right: 0;
+        }
+        .small-box .icon {
+            right: auto;
+            left: 10px;
+        }
+    </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed sidebar-rtl">
+<body class="hold-transition sidebar-mini layout-fixed text-sm">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -27,33 +101,42 @@
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('dashboard') }}" class="nav-link">{{ __('Dashboard') }}</a>
+                    <a href="{{ route('dashboard') }}" class="nav-link">{{ __('messages.dashboard') }}</a>
                 </li>
             </ul>
 
             <!-- Right navbar links -->
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav ml-auto">
                 <!-- Authentication -->
                 @auth
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                        {{ Auth::user()->name }}
+                <li class="nav-item dropdown user-menu">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle mr-2"></i>
+                        <span>{{ Auth::user()->name }}</span>
                     </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ route('profile.edit') }}">{{ __('Profile') }}</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="dropdown-item">{{ __('Log Out') }}</button>
-                        </form>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <li class="user-header bg-primary">
+                            <p>
+                                {{ Auth::user()->name }}
+                                <small>{{ Auth::user()->email }}</small>
+                            </p>
+                        </li>
+                        <li class="user-footer">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">{{ __('messages.profile') }}</a>
+                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-default btn-flat float-right">{{ __('messages.logout') }}</button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
                 @else
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ __('Log in') }}</a>
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('messages.login') }}</a>
                 </li>
                 @if (Route::has('register'))
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    <a class="nav-link" href="{{ route('register') }}">{{ __('messages.register') }}</a>
                 </li>
                 @endif
                 @endauth
@@ -65,7 +148,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ route('dashboard') }}" class="brand-link">
-                <span class="brand-text font-weight-light">مدرسة غدو - لوحة التحكم</span>
+                <span class="brand-text font-weight-light">{{ __('مدرسة غدو - لوحة التحكم') }}</span>
             </a>
 
             <!-- Sidebar -->
@@ -77,7 +160,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>{{ __('Dashboard') }}</p>
+                                <p>{{ __('messages.dashboard') }}</p>
                             </a>
                         </li>
                         {{-- These routes need to be implemented --}}
@@ -90,15 +173,15 @@
                         </li>
                         @endcan --}}
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">
+                            <a href="#" class="nav-link" onclick="alert('{{ __('messages.feature_coming_soon') }}');">
                                 <i class="nav-icon fas fa-tools"></i>
-                                <p>{{ __('Maintenance Requests') }}</p>
+                                <p>{{ __('messages.maintenance_requests') }}</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">
+                            <a href="#" class="nav-link" onclick="alert('{{ __('messages.feature_coming_soon') }}');">
                                 <i class="nav-icon fas fa-boxes"></i>
-                                <p>{{ __('Material Requests') }}</p>
+                                <p>{{ __('messages.material_requests') }}</p>
                             </a>
                         </li>
                         @endauth
@@ -157,10 +240,10 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <strong>{{ __('Copyright') }} &copy; {{ date('Y') }} <a href="#">{{ config('app.name', 'Ghodo School Admin') }}</a>.</strong>
-            {{ __('All rights reserved.') }}
+            <strong>{{ __('messages.copyright') }} &copy; {{ date('Y') }} <a href="#">{{ config('app.name', 'Ghodo School Admin') }}</a>.</strong>
+            {{ __('messages.all_rights_reserved') }}
             <div class="float-left d-none d-sm-inline-block">
-                <b>{{ __('Version') }}</b> 1.0.0
+                <b>{{ __('messages.version') }}</b> 1.0.0
             </div>
         </footer>
     </div>
@@ -174,5 +257,39 @@
 
     <!-- Stack for page-specific scripts -->
     @stack('scripts')
+    
+    <!-- Initialize Bootstrap components -->
+    <script>
+        $(document).ready(function() {
+            // Initialize dropdowns
+            $('.dropdown-toggle').dropdown();
+            
+            // Make dropdown work on hover for desktop
+            $('.dropdown').hover(
+                function() { 
+                    if (window.innerWidth >= 768) {
+                        $('.dropdown-toggle', this).trigger('click'); 
+                    }
+                }
+            );
+            
+            // Fix burger menu toggle
+            $('[data-widget="pushmenu"]').on('click', function(e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapse');
+                $('body').toggleClass('sidebar-open');
+            });
+            
+            // Make dashboard boxes clickable
+            $('.info-box, .small-box').css('cursor', 'pointer').on('click', function() {
+                var $infoBtn = $(this).find('.info-box-content a, .small-box-footer');
+                if ($infoBtn.length) {
+                    window.location = $infoBtn.attr('href');
+                } else {
+                    alert('{{ __("messages.feature_coming_soon") }}');
+                }
+            });
+        });
+    </script>
 </body>
 </html> 

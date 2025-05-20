@@ -1,5 +1,5 @@
 /* Custom CSS for AdminLTE RTL Layout */
-body {
+html[dir="rtl"] {
     direction: rtl;
     text-align: right;
 }
@@ -10,12 +10,12 @@ body {
     font-style: normal;
     font-weight: 900;
     font-display: auto;
-    src: url("/build/webfonts/fa-solid-900.eot");
-    src: url("/build/webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"),
-         url("/build/webfonts/fa-solid-900.woff2") format("woff2"),
-         url("/build/webfonts/fa-solid-900.woff") format("woff"),
-         url("/build/webfonts/fa-solid-900.ttf") format("truetype"),
-         url("/build/webfonts/fa-solid-900.svg#fontawesome") format("svg");
+    src: url("/webfonts/fa-solid-900.eot");
+    src: url("/webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"),
+         url("/webfonts/fa-solid-900.woff2") format("woff2"),
+         url("/webfonts/fa-solid-900.woff") format("woff"),
+         url("/webfonts/fa-solid-900.ttf") format("truetype"),
+         url("/webfonts/fa-solid-900.svg#fontawesome") format("svg");
 }
 
 @font-face {
@@ -23,12 +23,12 @@ body {
     font-style: normal;
     font-weight: 400;
     font-display: auto;
-    src: url("/build/webfonts/fa-regular-400.eot");
-    src: url("/build/webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"),
-         url("/build/webfonts/fa-regular-400.woff2") format("woff2"),
-         url("/build/webfonts/fa-regular-400.woff") format("woff"),
-         url("/build/webfonts/fa-regular-400.ttf") format("truetype"),
-         url("/build/webfonts/fa-regular-400.svg#fontawesome") format("svg");
+    src: url("/webfonts/fa-regular-400.eot");
+    src: url("/webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"),
+         url("/webfonts/fa-regular-400.woff2") format("woff2"),
+         url("/webfonts/fa-regular-400.woff") format("woff"),
+         url("/webfonts/fa-regular-400.ttf") format("truetype"),
+         url("/webfonts/fa-regular-400.svg#fontawesome") format("svg");
 }
 
 @font-face {
@@ -36,45 +36,134 @@ body {
     font-style: normal;
     font-weight: normal;
     font-display: auto;
-    src: url("/build/webfonts/fa-brands-400.eot");
-    src: url("/build/webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"),
-         url("/build/webfonts/fa-brands-400.woff2") format("woff2"),
-         url("/build/webfonts/fa-brands-400.woff") format("woff"),
-         url("/build/webfonts/fa-brands-400.ttf") format("truetype"),
-         url("/build/webfonts/fa-brands-400.svg#fontawesome") format("svg");
+    src: url("/webfonts/fa-brands-400.eot");
+    src: url("/webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"),
+         url("/webfonts/fa-brands-400.woff2") format("woff2"),
+         url("/webfonts/fa-brands-400.woff") format("woff"),
+         url("/webfonts/fa-brands-400.ttf") format("truetype"),
+         url("/webfonts/fa-brands-400.svg#fontawesome") format("svg");
+}
+
+/* RTL Specific Styles */
+html[dir="rtl"] .content-wrapper, 
+html[dir="rtl"] .main-header, 
+html[dir="rtl"] .main-footer {
+    margin-right: 250px;
+    margin-left: 0;
+}
+
+html[dir="rtl"] .main-sidebar {
+    right: 0;
+    left: auto;
+}
+
+html[dir="rtl"] .sidebar-mini.sidebar-collapse .content-wrapper, 
+html[dir="rtl"] .sidebar-mini.sidebar-collapse .main-footer, 
+html[dir="rtl"] .sidebar-mini.sidebar-collapse .main-header {
+    margin-right: 4.6rem !important;
+    margin-left: 0 !important;
+}
+
+html[dir="rtl"] .dropdown-menu-right {
+    left: 0 !important;
+    right: auto !important;
+}
+
+html[dir="rtl"] .user-footer .float-right {
+    float: left !important;
+}
+
+html[dir="rtl"] .mr-2 {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+}
+
+html[dir="rtl"] .fa-bars {
+    transform: scaleX(-1);
 }
 
 /* Fix AdminLTE sidebar for RTL */
-.sidebar-rtl .nav-sidebar .nav-link > .right,
-.sidebar-rtl .nav-sidebar .nav-link > p > .right {
+html[dir="rtl"] .nav-sidebar .nav-link > .right,
+html[dir="rtl"] .nav-sidebar .nav-link > p > .right {
     right: auto;
     left: 1rem;
 }
 
-.sidebar-rtl .nav-sidebar .nav-link > .right {
+html[dir="rtl"] .nav-sidebar .nav-link > .right {
     position: absolute;
     right: auto;
     left: 1rem;
     top: .7rem;
 }
 
-/* Custom styles for Ghodo School Admin Panel */
-.navbar-brand-text {
-    font-weight: bold;
+/* Fix floating direction for RTL */
+html[dir="rtl"] .float-right {
+    float: left !important;
 }
 
-.main-header .navbar-nav .nav-item {
-    margin-left: 0;
-    margin-right: 0.5rem;
+html[dir="rtl"] .float-left {
+    float: right !important;
 }
 
-/* RTL adjustments */
-.ml-auto {
+/* Fix ML and MR auto classes for RTL */
+html[dir="rtl"] .ml-auto {
     margin-right: auto !important;
     margin-left: 0 !important;
 }
 
-.mr-auto {
+html[dir="rtl"] .mr-auto {
     margin-left: auto !important;
     margin-right: 0 !important;
+}
+
+/* User dropdown menu */
+.dropdown-menu {
+    padding: 0;
+    border: none;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.user-header {
+    padding: 15px;
+    text-align: center;
+    color: #fff;
+}
+
+.user-header p {
+    margin-bottom: 0;
+    font-size: 16px;
+}
+
+.user-header p small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.user-footer {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8f9fa;
+}
+
+/* Fix mobile sidebar */
+@media (max-width: 767.98px) {
+    html[dir="rtl"] .content-wrapper, 
+    html[dir="rtl"] .main-header, 
+    html[dir="rtl"] .main-footer {
+        margin-right: 0;
+    }
+    
+    html[dir="rtl"] .main-sidebar {
+        transform: translate(250px, 0);
+    }
+    
+    html[dir="rtl"] .sidebar-open .main-sidebar {
+        transform: translate(0, 0);
+    }
+    
+    .sidebar-open .wrapper .content-wrapper {
+        margin-right: 250px !important;
+    }
 }
