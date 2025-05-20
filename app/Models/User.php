@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'civil_id',
+        'role',
     ];
 
     /**
@@ -44,5 +47,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Define constants for roles
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_STAFF = 'staff';
+
+    // Get all available roles
+    public static function getAvailableRoles(): array
+    {
+        return [
+            self::ROLE_ADMIN => 'Admin',
+            self::ROLE_STAFF => 'Staff',
+        ];
+    }
+
+    // Helper method to check if user is admin
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
     }
 }
