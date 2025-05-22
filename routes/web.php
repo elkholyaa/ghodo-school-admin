@@ -20,4 +20,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard route
+    Route::get('/dashboard', function() {
+        return view('admin.dashboard');
+    })->name('dashboard');
+    
+    // User management routes
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class)->middleware('is_admin');
+    // Other admin resource routes will also go in this group
+});
+
 require __DIR__.'/auth.php';

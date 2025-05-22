@@ -147,7 +147,7 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="{{ route('dashboard') }}" class="brand-link">
+            <a href="{{ route('admin.dashboard') }}" class="brand-link">
                 <span class="brand-text font-weight-light">{{ __('مدرسة غدو - لوحة التحكم') }}</span>
             </a>
 
@@ -158,20 +158,19 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         @auth
                         <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>{{ __('messages.dashboard') }}</p>
                             </a>
                         </li>
-                        {{-- These routes need to be implemented --}}
-                        {{-- @can('viewAny', App\Models\User::class)
+                        @can('viewAny', App\Models\User::class)
                         <li class="nav-item">
                             <a href="{{ route('admin.users.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
-                                <p>{{ __('User Management') }}</p>
+                                <p>{{ __('messages.user_management') }}</p>
                             </a>
                         </li>
-                        @endcan --}}
+                        @endcan
                         <li class="nav-item">
                             <a href="#" class="nav-link" onclick="alert('{{ __('messages.feature_coming_soon') }}');">
                                 <i class="nav-icon fas fa-tools"></i>
