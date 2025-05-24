@@ -500,17 +500,17 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Log in as staff: The "User Management" link should NOT be visible.
     *   **Key Learning Takeaway:** This phase covers the complete CRUD lifecycle, effective use of Resourceful Controllers, Route Model Binding, Form Requests for robust validation and request-specific authorization, Policies for model-level authorization, Middleware for route group protection, database seeding for initial admin setup, and conditional UI rendering with Blade's `@can` directive.
 2.11. **Create User Tests:** Implement unit and feature tests for the User model and management.
-    *   2.11.1. ☐ **Create UserModelTest:** Test model attributes and helper methods.
+    *   2.11.1. ✅ **Create UserModelTest:** Test model attributes and helper methods.
         **Cursor AI Prompt:**
         - Create a `UserModelTest.php` file in the `tests/Unit/` directory.
-        - Test that the `User` model correctly defines its `$fillable` attributes (name, email, password, phone, civil_id, role).
-        - Test the `isAdmin()` helper method returns true when role is 'admin' and false otherwise.
-        - Use the `RefreshDatabase` trait to ensure a clean database state.
+        - Test that the User model correctly implements the `isAdmin()` helper method.
+        - Test that the model correctly defines relationships if any (e.g., hasMany MaintenanceRequest or hasMany MaterialRequest relationships).
+        - Test that all required attributes are fillable and work as expected.
+        - Use the `RefreshDatabase` trait and create test models to verify functionality.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
-        - Run `php artisan test tests/Unit/UserModelTest.php`.
-        - Ensure all tests pass.
-        - Review the generated test file to understand how model attributes and methods are tested.
+        - Run `php artisan test tests/Unit/UserModelTest.php`. Ensure all tests pass.
+        **Status:** ✅ Completed - Unit tests created for User model attributes, helper methods, and relationships
     *   2.11.2. ☐ **Create UserManagementTest:** Test CRUD operations and permissions.
         **Cursor AI Prompt:**
         - Create a `UserManagementTest.php` file in the `tests/Feature/` directory.
@@ -565,7 +565,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Log in as an admin. Navigate to `/admin/dashboard`. Use `dd()` or Laravel Debugbar to inspect the variables passed to the view. Verify counts are logical (e.g., 0 if no requests yet).
         - Log in as a staff user. Navigate to `/admin/dashboard`. Verify counts are relevant to that staff member.
     *   **Learning:** Basic controller logic, conditional data fetching based on user role using Eloquent, passing data to views, and displaying data in Blade.
-3.6.  ☐ **Display Widgets:** Display the counts in the view using AdminLTE `info-box` or `small-box` widgets.
+3.6.  ✅ **Display Widgets:** Display the counts in the view using AdminLTE `info-box` or `small-box` widgets.
     **Cursor AI Prompt:**
     - In `resources/views/admin/dashboard.blade.php`, add Blade code to display the counts passed from the controller (using the variable names you used when passing them).
     - Use AdminLTE `info-box` or `small-box` components for visual presentation of each count. Conditionally display admin-specific vs. staff-specific widgets using `@if(auth()->user()->isAdmin()) ... @else ... @endif`.
@@ -574,8 +574,9 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Log in as admin. View `/admin/dashboard`. Verify admin-specific widgets appear with correct counts.
     - Log in as staff. View `/admin/dashboard`. Verify staff-specific widgets appear with correct counts.
     - Check for any Blade errors if variables are not found.
+    **Status:** ✅ Completed - Role-based AdminLTE widgets implemented showing system-wide counts for admin and personal counts for staff users.
 3.7.  **Create Dashboard Tests:** Implement tests to verify dashboard displays correct data.
-    *   ☐ **Create DashboardTest:** Test dashboard content for different user roles.
+    *   ✅ **Create DashboardTest:** Test dashboard content for different user roles.
         **Cursor AI Prompt:**
         - Create a `DashboardTest.php` file in the `tests/Feature/` directory.
         - Test that both admin and staff users can access the dashboard.
@@ -586,6 +587,15 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Feature/DashboardTest.php`.
         - Ensure all tests pass, verifying that different roles see appropriate data on the dashboard.
+        **Status:** ✅ Completed - Comprehensive test suite created including Feature, Unit, and Model tests with proper test database isolation.
+
+**Authentication Route Fixes:**
+✅ **Fixed Dashboard Route References:** Resolved "Route [dashboard] not defined" errors by updating all authentication controllers to use the correct `admin.dashboard` route.
+    - Updated AuthenticatedSessionController, RegisteredUserController, EmailVerificationNotificationController, EmailVerificationPromptController, ConfirmablePasswordController, and VerifyEmailController
+    - Updated corresponding test files to use correct route assertions
+    - Updated navigation and welcome page components to use consistent `admin.dashboard` routing
+    - Configured separate test database in phpunit.xml for proper test isolation
+    - Verified functionality works correctly for both admin and staff user roles
 
 ---
 [Back to Top](#)
@@ -611,8 +621,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
     *   1.3. ☐ **Run migration:** Run `php artisan migrate`. (Command)
         🧑‍💻 **Developer Check:** (After running migration)
         - Check your database schema. The `maintenance_requests` table should exist with the defined columns.
-    *   1.4. ☐ **Create Model:** Use `php artisan make:model MaintenanceRequest`. (Command)
-    *   1.5. ☐ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `materialRequests`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
+    *   1.4. ✅ **Create Model:** Use `php artisan make:model MaintenanceRequest`. (Command)
+    *   1.5. ✅ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `materialRequests`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
         **Cursor AI Prompt:**
         - In the `App\Models\MaintenanceRequest` model, define the `$fillable` array to include `requester_id`, `floor`, `location`, `title`, `description`, `priority`, and `status`.
         - Define a `belongsTo` relationship named `requester` linking to the `App\Models\User` model.
@@ -622,6 +632,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Open `app/Models/MaintenanceRequest.php`.
         - Verify `$fillable` is correct.
         - Verify the `requester()` and `materialRequests()` (if applicable yet) relationship methods are defined.
+        **Status:** ✅ Completed - Model created with proper fillable attributes and relationships defined
 2.  **Routing:**
     *   2.1. ☐ **Add resourceful route:** Add the `maintenance-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
         **Cursor AI Prompt:**
@@ -743,7 +754,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Log in as staff. The "Maintenance Requests" link should also be visible and work (page content will be filtered by policy).
     *   **Key Learning Takeaway:** Implementing Policies with more nuanced, condition-based authorization (role + ownership + data status), handling foreign key relationships correctly, reinforcing the full CRUD + Form Request + Policy pattern.
 7.  **Create Maintenance Request Tests:** Implement unit and feature tests.
-    *   7.1. ☐ **Create MaintenanceRequestModelTest:** Test model relationships and attributes.
+    *   7.1. ✅ **Create MaintenanceRequestModelTest:** Test model relationships and attributes.
         **Cursor AI Prompt:**
         - Create a `MaintenanceRequestModelTest.php` file in the `tests/Unit/` directory.
         - Test that the `MaintenanceRequest` model correctly defines its relationships: `requester()` (belongsTo User) and `materialRequests()` (hasMany MaterialRequest).
@@ -753,6 +764,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Unit/MaintenanceRequestModelTest.php`.
         - Ensure all tests pass, verifying model setup.
+        **Status:** ✅ Completed - Comprehensive unit tests created for model relationships, attributes, and factories
     *   7.2. ☐ **Create MaintenanceRequestTest:** Test CRUD operations and permissions.
         **Cursor AI Prompt:**
         - Create a `MaintenanceRequestTest.php` file in the `tests/Feature/` directory.
@@ -790,8 +802,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
     *   1.3. ☐ **Run migration:** Run `php artisan migrate`. (Command)
         🧑‍💻 **Developer Check:** (After migration)
         - Confirm `material_requests` table exists in DB with correct schema.
-    *   1.4. ☐ **Create Model:** Use `php artisan make:model MaterialRequest`. (Command)
-    *   1.5. ☐ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `maintenanceRequest`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
+    *   1.4. ✅ **Create Model:** Use `php artisan make:model MaterialRequest`. (Command)
+    *   1.5. ✅ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `maintenanceRequest`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
         **Cursor AI Prompt:**
         - In the `App\Models\MaterialRequest` model, define the `$fillable` array to include `requester_id`, `maintenance_request_id`, `item_description`, `quantity`, `cost`, `funding_source`, and `status`.
         - Define a `belongsTo` relationship named `requester` linking to the `App\Models\User` model.
@@ -800,6 +812,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open `app/Models/MaterialRequest.php`.
         - Verify `$fillable` and relationship methods (`requester`, `maintenanceRequest`).
+        **Status:** ✅ Completed - Model created with proper fillable attributes and nullable relationships defined
 2.  **Routing:**
     *   2.1. ☐ **Add resourceful route:** Add the `material-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
         **Cursor AI Prompt:**
@@ -912,7 +925,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Log in as admin/staff. Verify "Material Requests" link is visible and functional.
     *   **Key Learning Takeaway:** Reinforcing the advanced authorization patterns, working with optional foreign key relationships, and building complex forms with dynamic data (dropdown for related requests).
 7.  **Create Material Request Tests:** Implement unit and feature tests.
-    *   7.1. ☐ **Create MaterialRequestModelTest:** Test model relationships and attributes.
+    *   7.1. ✅ **Create MaterialRequestModelTest:** Test model relationships and attributes.
         **Cursor AI Prompt:**
         - Create a `MaterialRequestModelTest.php` file in the `tests/Unit/` directory.
         - Test that the `MaterialRequest` model correctly defines its relationships: `requester()` (belongsTo User) and `maintenanceRequest()` (belongsTo MaintenanceRequest).
@@ -922,6 +935,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Unit/MaterialRequestModelTest.php`. Ensure tests pass.
+        **Status:** ✅ Completed - Comprehensive unit tests created for model relationships, attributes, nullable relationships, and factories
     *   7.2. ☐ **Create MaterialRequestTest:** Test CRUD operations and permissions.
         **Cursor AI Prompt:**
         - Create a `MaterialRequestTest.php` file in the `tests/Feature/` directory.
