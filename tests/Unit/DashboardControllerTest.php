@@ -248,23 +248,26 @@ class DashboardControllerTest extends TestCase
         // Create admin user
         $adminUser = User::factory()->create(['role' => 'admin']);
         
-        // Clear existing data for this test
+        // Clear existing data for this test to ensure clean state
         MaintenanceRequest::query()->delete();
         MaterialRequest::query()->delete();
         
-        // Create specific test data
-        MaintenanceRequest::factory()->count(2)->create(['status' => 'new']);
-        MaintenanceRequest::factory()->count(1)->create(['status' => 'completed']); // Should not be counted
+        // Create specific test data for maintenance requests
+        // Create 1 'new' and 1 'in_progress' which should both count as "pending"
+        MaintenanceRequest::factory()->create(['status' => 'new']);
+        MaintenanceRequest::factory()->create(['status' => 'in_progress']);
+        MaintenanceRequest::factory()->create(['status' => 'completed']); // Should not be counted
         
-        MaterialRequest::factory()->count(1)->create(['status' => 'pending']);
-        MaterialRequest::factory()->count(1)->create(['status' => 'approved']); // Should not be counted
+        // Create specific test data for material requests
+        MaterialRequest::factory()->create(['status' => 'pending']); // Should count
+        MaterialRequest::factory()->create(['status' => 'approved']); // Should not be counted
 
         $this->actingAs($adminUser);
 
         $response = $this->controller->index();
         $data = $response->getData();
 
-        $this->assertEquals(2, $data['pendingMaintenanceCount']); // Only new + in_progress
-        $this->assertEquals(1, $data['pendingMaterialCount']); // Only pending
+        $this->assertEquals(2, $data['pendingMaintenanceCount']); // 1 new + 1 in_progress = 2 pending
+        $this->assertEquals(1, $data['pendingMaterialCount']); // Only 1 pending
     }
 }

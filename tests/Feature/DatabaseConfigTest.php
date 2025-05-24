@@ -26,7 +26,14 @@ class DatabaseConfigTest extends TestCase
         
         // Check database name through Laravel's config system
         $database = config('database.connections.mysql.database');
-        $this->assertEquals('ghodo_admin_db', $database);
+        
+        // In test environment, we should be using the test database
+        // In other environments, we should be using the main database
+        if (app()->environment('testing')) {
+            $this->assertEquals('ghodo_admin_test', $database);
+        } else {
+            $this->assertEquals('ghodo_admin_db', $database);
+        }
         
         // Verify we can connect to the database
         $this->assertTrue(\Illuminate\Support\Facades\DB::connection()->getPdo() !== null);
