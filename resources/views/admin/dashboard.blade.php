@@ -51,9 +51,13 @@
                         <div class="icon">
                             <i class="fas fa-tools"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
-                            {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
-                        </a>
+                        @can('viewAny', App\Models\MaintenanceRequest::class)
+                            <a href="{{ route('admin.maintenance-requests.index') }}" class="small-box-footer">
+                                {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
+                            </a>
+                        @else
+                            <span class="small-box-footer">{{ __('messages.more_info') }}</span>
+                        @endcan
                     </div>
                 </div>
                 
@@ -67,9 +71,13 @@
                         <div class="icon">
                             <i class="fas fa-boxes"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
-                            {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
-                        </a>
+                        @can('viewAny', App\Models\MaterialRequest::class)
+                            <a href="{{ route('admin.material-requests.index') }}" class="small-box-footer">
+                                {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
+                            </a>
+                        @else
+                            <span class="small-box-footer">{{ __('messages.more_info') }}</span>
+                        @endcan
                     </div>
                 </div>
                 
@@ -100,9 +108,13 @@
                         <div class="icon">
                             <i class="fas fa-tools"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
-                            {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
-                        </a>
+                        @can('viewAny', App\Models\MaintenanceRequest::class)
+                            <a href="{{ route('admin.maintenance-requests.index') }}" class="small-box-footer">
+                                {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
+                            </a>
+                        @else
+                            <span class="small-box-footer">{{ __('messages.more_info') }}</span>
+                        @endcan
                     </div>
                 </div>
                 
@@ -116,9 +128,13 @@
                         <div class="icon">
                             <i class="fas fa-boxes"></i>
                         </div>
-                        <a href="#" class="small-box-footer">
-                            {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
-                        </a>
+                        @can('viewAny', App\Models\MaterialRequest::class)
+                            <a href="{{ route('admin.material-requests.index') }}" class="small-box-footer">
+                                {{ __('messages.more_info') }} <i class="fas fa-arrow-circle-right"></i>
+                            </a>
+                        @else
+                            <span class="small-box-footer">{{ __('messages.more_info') }}</span>
+                        @endcan
                     </div>
                 </div>
             </div>
