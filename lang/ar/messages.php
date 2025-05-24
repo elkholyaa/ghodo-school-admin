@@ -84,4 +84,18 @@ return [
     'unauthorized' => 'غير مصرح',
     'no_permission' => 'ليس لديك الصلاحية',
     'confirm_delete' => 'هل أنت متأكد من الحذف؟',
+    
+    // Dashboard specific translations
+    'total_users' => 'إجمالي المستخدمين',
+    'pending_maintenance_requests' => 'طلبات الصيانة المعلقة',
+    'pending_material_requests' => 'طلبات المواد المعلقة',
+    'my_pending_maintenance_requests' => 'طلبات الصيانة المعلقة لي',
+    'my_pending_material_requests' => 'طلبات المواد المعلقة لي',
+    'admin' => 'مشرف',
+    'staff' => 'موظف',
+    'system_overview' => 'نظرة عامة على النظام',
+    'admin_access' => 'وصول المشرف',
+    'staff_info' => 'معلومات الموظف',
+    'welcome_staff' => 'مرحبًا بك',
+    'staff_dashboard_description' => 'يمكنك من هنا متابعة طلباتك وإدارة مهامك الشخصية.',
 ]; 

@@ -1,0 +1,14 @@
+I'm continuing development of the Ghodo School Admin Panel, a Laravel 12 application with Arabic RTL interface using AdminLTE. The project follows the Software Requirements Specification (SRS) in the docs/ghodo-school-srs.md file, which contains a detailed roadmap with tasks marked with ✅ when completed.
+
+Please:
+
+1. Review the .cursorrc file to understand project-specific configurations and guidelines
+2. Examine the SRS document to determine current progress (which tasks have ✅) and identify the next uncompleted tasks
+3. Provide a plan to implement the next logical task including:
+   - Required files to create/modify
+   - Key Laravel concepts involved
+   - Any potential challenges to watch for
+4. Share the appropriate Cursor AI prompt from the SRS for this task
+5. Help me implement the feature with proper Arabic RTL support
+
+Focus on quality implementation following Laravel best practices, the .cursorrc configuration guidelines, and the educational goals outlined in the SRS.

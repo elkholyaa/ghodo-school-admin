@@ -529,7 +529,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
 
 ### 3.4. Phase 3: Dashboard Implementation
 3.1.  ✅ **Implement Dashboard Route:** Added a route for the dashboard in the admin route group.
-3.2.  ☐ **Add Routing:** Add the dashboard route within the authenticated admin group in `routes/web.php`.
+3.2.  ✅ **Add Routing:** Add the dashboard route within the authenticated admin group in `routes/web.php`.
     ```php
     // Inside the Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(...)
     Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
@@ -541,7 +541,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
     🧑‍💻 **Developer Check:**
     - Run `php artisan route:list | grep admin.dashboard`. Verify the route is listed correctly.
-3.3.  ☐ **Create DashboardController:** Create the controller that will handle the dashboard logic.
+3.3.  ✅ **Create DashboardController:** Create the controller that will handle the dashboard logic.
     **Cursor AI Prompt:**
     - Use `php artisan make:controller Admin/DashboardController` to create the controller.
     - In the generated `DashboardController`, implement the `index()` method that returns `view('admin.dashboard')`.
@@ -554,7 +554,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Navigate to `/admin/dashboard` and verify it loads without errors (assuming the view exists).
 3.4.  ✅ **Create View:** Create `resources/views/admin/dashboard.blade.php`. It should `@extends('layouts.admin')`. (Manual Creation/Extension)
 3.5.  **Logic:**
-    *   3.5.1. ☐ **Implement Logic:** In `DashboardController@index` method, fetch counts based on user role and pass them to the view.
+    *   3.5.1. ✅ **Implement Logic:** In `DashboardController@index` method, fetch counts based on user role and pass them to the view.
         **Cursor AI Prompt:**
         - In the `Admin\DashboardController@index` method, check if the authenticated user (`auth()->user()`) is admin using the `isAdmin()` helper method.
         - If the user is admin, fetch counts for: total users (`App\Models\User::count()`), total pending maintenance requests (status 'new' or 'in_progress' from `App\Models\MaintenanceRequest`), and total pending material requests (status 'pending' from `App\Models\MaterialRequest`). (Ensure these models exist or stub them).
