@@ -22,6 +22,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     
     // User management routes
     Route::resource('users', App\Http\Controllers\Admin\UserController::class)->middleware('is_admin');
+    
+    // Maintenance request management routes
+    Route::resource('maintenance-requests', App\Http\Controllers\Admin\MaintenanceRequestController::class);
+    
+    // Material Requests CRUD
+    Route::resource('material-requests', App\Http\Controllers\Admin\MaterialRequestController::class);
+    
     // Other admin resource routes will also go in this group
 });
 

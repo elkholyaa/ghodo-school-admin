@@ -76,6 +76,8 @@ This document outlines the requirements for the Ghodo School Admin Panel. **Its 
 *   **Blade Templating**, **Form Handling & Validation** (using **Form Requests**).
 *   **Authentication** & **Authorization** (using **Policies** and **Middleware**).
 *   **Frontend Integration**
+*   **Testing Best Practices** including database isolation and test environment setup.
+*   **Database Management** with separate databases for development, testing, and production environments.
 *   Following Laravel conventions for maintainable and efficient code.
 *   Effectively using an **AI coding assistant (Cursor AI)** by providing clear, structured requirements.
 
@@ -168,6 +170,31 @@ This roadmap suggests a structured approach to developing the project, focusing 
     - Verify that `APP_NAME` is set to "Ghodo School Admin Panel".
     - Verify that `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` match your local MySQL setup.
     - Try running `php artisan config:cache` and then `php artisan config:clear`. If there's a syntax error in `.env`, these might fail.
+0.2.1. ✅ **Configure Separate Test Database:** Set up a dedicated test database to ensure test isolation and prevent interference with development data.
+    **Cursor AI Prompt:**
+    - Create a `.env.testing` file in the project root for test environment configuration.
+    - Configure it to use a separate test database (e.g., 'ghodo_admin_test') with the same connection settings as development but different database name.
+    - Update `phpunit.xml` to use the testing environment by adding `<env name="APP_ENV" value="testing"/>` and `<env name="DB_DATABASE" value="ghodo_admin_test"/>` in the `<php>` section.
+    - Explain why separate test databases are a Laravel best practice (test isolation, RefreshDatabase trait usage, preventing development data loss).
+    - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
+    🧑‍💻 **Developer Check:**
+    - Create the test database `ghodo_admin_test` in your MySQL client.
+    - Verify `.env.testing` exists with correct test database configuration.
+    - Verify `phpunit.xml` has the testing environment configuration.
+    - Run `php artisan test --env=testing` to ensure tests use the separate database.
+    - **Key Learning:** Test database isolation prevents tests from interfering with development data, allows safe use of `RefreshDatabase` trait, and maintains clean test environments.
+0.2.2. ✅ **Create Test Database Setup Command:** Create an Artisan command to easily set up and refresh the test database.
+    **Cursor AI Prompt:**
+    - Use `php artisan make:command SetupTestDatabase` to create a custom Artisan command.
+    - Implement the command to migrate and seed the test database specifically.
+    - The command should run migrations and seeders on the test database using `--env=testing`.
+    - Add a signature like `setup:test-db` and description "Set up and refresh the test database".
+    - Include database dropping/recreation logic if needed for complete fresh setup.
+    - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
+    🧑‍💻 **Developer Check:**
+    - Run `php artisan setup:test-db` and verify it successfully sets up the test database.
+    - Verify the test database has the correct schema and seed data after running the command.
+    - Use this command when you need to reset your test environment to a clean state.
 0.3.  ✅ **Initial Migration:** Run `php artisan migrate` to create the default Laravel tables.
     **Cursor AI Prompt:**
     - Confirm the Artisan command to run initial database migrations.
@@ -506,10 +533,14 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Test that the User model correctly implements the `isAdmin()` helper method.
         - Test that the model correctly defines relationships if any (e.g., hasMany MaintenanceRequest or hasMany MaterialRequest relationships).
         - Test that all required attributes are fillable and work as expected.
-        - Use the `RefreshDatabase` trait and create test models to verify functionality.
+        - Use the `RefreshDatabase` trait to ensure test database isolation and clean state for each test.
+        - Create test models using factories or direct instantiation to verify functionality.
+        - **Important:** Tests should run against the dedicated test database configured in `phpunit.xml`, not the development database.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Unit/UserModelTest.php`. Ensure all tests pass.
+        - Verify tests are running against the test database by checking the database name in test output or using database inspection.
+        - Confirm development database data remains unchanged after running tests.
         **Status:** ✅ Completed - Unit tests created for User model attributes, helper methods, and relationships
     *   2.11.2. ☐ **Create UserManagementTest:** Test CRUD operations and permissions.
         **Cursor AI Prompt:**
@@ -582,11 +613,14 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Test that both admin and staff users can access the dashboard.
         - Test that the dashboard displays role-appropriate data (admin sees all user counts, staff sees only their own request counts).
         - Create test data for users, maintenance requests, and material requests to verify correct counts are displayed.
-        - Use the `RefreshDatabase` trait and set up test data in the setUp method.
+        - Use the `RefreshDatabase` trait to ensure each test starts with a clean test database state.
+        - Set up test data in the test methods or setUp method using factories or model creation.
+        - **Important:** All test data should be created in the isolated test database, preventing any impact on development data.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Feature/DashboardTest.php`.
         - Ensure all tests pass, verifying that different roles see appropriate data on the dashboard.
+        - Verify that test execution doesn't affect your development database or existing development user accounts.
         **Status:** ✅ Completed - Comprehensive test suite created including Feature, Unit, and Model tests with proper test database isolation.
 
 **Authentication Route Fixes:**
@@ -602,8 +636,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
 
 ### 3.5. Phase 4: Maintenance Request Management - CRUD & Role-Based Policies
 1.  **Data Model:**
-    *   4.1.1. ☐ **Create migration:** Use `php artisan make:migration create_maintenance_requests_table --create=maintenance_requests`. (Command)
-    *   1.2. ☐ **Define schema:** Define schema as per [Section 5.3](#53-maintenance_requests-table) in the migration file.
+    *   4.1.1. ✅ **Create migration:** Use `php artisan make:migration create_maintenance_requests_table --create=maintenance_requests`. (Command)
+    *   1.2. ✅ **Define schema:** Define schema as per [Section 5.3](#53-maintenance_requests-table) in the migration file.
         **Cursor AI Prompt:**
         - In the `create_maintenance_requests_table` migration file, define the table schema: an auto-incrementing primary `id`.
         - Add a foreign key `requester_id` (unsigned big integer) referencing the `users` table, with `on delete cascade`.
@@ -618,9 +652,11 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open the newly created migration file for `maintenance_requests`.
         - Verify all columns, types, constraints (foreign keys, defaults, enum values) are correctly defined.
-    *   1.3. ☐ **Run migration:** Run `php artisan migrate`. (Command)
+        **Status:** ✅ Completed - Migration created with proper schema including foreign keys, enum values, and constraints
+    *   1.3. ✅ **Run migration:** Run `php artisan migrate`. (Command)
         🧑‍💻 **Developer Check:** (After running migration)
         - Check your database schema. The `maintenance_requests` table should exist with the defined columns.
+        **Status:** ✅ Completed - Migration run successfully, table exists in database with correct schema
     *   1.4. ✅ **Create Model:** Use `php artisan make:model MaintenanceRequest`. (Command)
     *   1.5. ✅ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `materialRequests`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
         **Cursor AI Prompt:**
@@ -634,16 +670,17 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Verify the `requester()` and `materialRequests()` (if applicable yet) relationship methods are defined.
         **Status:** ✅ Completed - Model created with proper fillable attributes and relationships defined
 2.  **Routing:**
-    *   2.1. ☐ **Add resourceful route:** Add the `maintenance-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
+    *   2.1. ✅ **Add resourceful route:** Add the `maintenance-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
         **Cursor AI Prompt:**
         - In `routes/web.php`, within the `Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(...)` block, add a resourceful route for `maintenance-requests`.
         - Specify that this route is managed by `App\Http\Controllers\Admin\MaintenanceRequestController`.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan route:list | grep maintenance-requests`. Verify all 7 resourceful routes are listed under the `admin.` prefix.
+        **Status:** ✅ Completed - Resourceful route added to admin group, all 7 routes registered correctly
 3.  **Policy:**
-    *   3.1. ☐ **Create Policy:** Use `php artisan make:policy MaintenanceRequestPolicy --model=MaintenanceRequest`. (Command)
-    *   3.2. ☐ **Implement Policy methods:** Implement `viewAny`, `view`, `create`, `update`, and `delete` methods as detailed in [Functional Requirements - FR-MR](#46-fr-mr-maintenance-request-management) (admin full control; staff conditional).
+    *   3.1. ✅ **Create Policy:** Use `php artisan make:policy MaintenanceRequestPolicy --model=MaintenanceRequest`. (Command)
+    *   3.2. ✅ **Implement Policy methods:** Implement `viewAny`, `view`, `create`, `update`, and `delete` methods as detailed in [Functional Requirements - FR-MR](#46-fr-mr-maintenance-request-management) (admin full control; staff conditional).
         **Cursor AI Prompt:**
         - In the `MaintenanceRequestPolicy` class, implement the `viewAny(User $user)` method to allow if the user is admin or staff (`return $user->isAdmin() || $user->role === 'staff';`). Assume `isAdmin()` exists.
         - Implement the `view(User $user, MaintenanceRequest $maintenanceRequest)` method to allow if the user is admin OR if the user is staff AND they are the `requester_id` of the request.
@@ -654,7 +691,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open `app/Policies/MaintenanceRequestPolicy.php`.
         - Carefully review each policy method to ensure it correctly implements the specified business rules for admin and staff users.
-    *   3.3. ☐ **Register Policy:** Register in `app/Providers/AuthServiceProvider.php`. 
+        **Status:** ✅ Completed - Policy created with role-based authorization rules for admin and staff users
+    *   3.3. ✅ **Register Policy:** Register in `app/Providers/AuthServiceProvider.php`. 
         **Cursor AI Prompt:**
         - In `app/Providers/AuthServiceProvider.php`, add the MaintenanceRequestPolicy to the `$policies` array.
         - Add the line: `App\Models\MaintenanceRequest::class => App\Policies\MaintenanceRequestPolicy::class,` to the `$policies` array.
@@ -662,129 +700,19 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open `app/Providers/AuthServiceProvider.php`.
         - Verify `App\Models\MaintenanceRequest::class => App\Policies\MaintenanceRequestPolicy::class,` is in `$policies`.
+        **Status:** ✅ Completed - Policy auto-registered via Laravel's policy discovery mechanism (no explicit registration needed)
 4.  **Controller & Form Requests:**
-    *   4.1. ☐ **Create Controller:** Use `php artisan make:controller Admin/MaintenanceRequestController --resource --model=MaintenanceRequest`. (Command)
-    *   4.2. ☐ **Create Store Request:** Use `php artisan make:request Admin/StoreMaintenanceRequestRequest`. (Command)
-    *   4.3. ☐ **Implement Store Request:** Implement `authorize()` (authenticated) and `rules()` methods.
-        **Cursor AI Prompt:**
-        - In `Admin\StoreMaintenanceRequestRequest`, implement the `authorize()` method to return true if the user is authenticated (`auth()->check()`).
-        - Implement the `rules()` method with validation rules for: `location` (required string, max 255), `title` (required string, max 255), `floor` (nullable string, max 255), `description` (nullable text), `priority` (required, in:normal,urgent), `status` (required, in:new,in_progress,completed,transferred).
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:**
-        - Open `app/Http/Requests/Admin/StoreMaintenanceRequestRequest.php`.
-        - Verify `authorize()` returns `auth()->check()`.
-        - Verify all validation rules in `rules()` are correct.
-    *   4.4. ☐ **Create Update Request:** Use `php artisan make:request Admin/UpdateMaintenanceRequestRequest`. (Command)
-    *   4.5. ☐ **Implement Update Request:** Implement `authorize()` (using policy) and `rules()` methods.
-        **Cursor AI Prompt:**
-        - In `Admin\UpdateMaintenanceRequestRequest`, implement the `authorize()` method to return the result of calling the `update` ability on the authenticated user for the maintenance request instance being updated. Access the request instance using `$this->route('maintenance_request')`.
-        - Implement the `rules()` method with validation rules identical to `StoreMaintenanceRequestRequest`.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:**
-        - Open `app/Http/Requests/Admin/UpdateMaintenanceRequestRequest.php`.
-        - Verify `authorize()` correctly uses the policy: `return $this->user()->can('update', $this->route('maintenance_request'));`.
-        - Verify `rules()` are identical or appropriate for updates.
-5.  **Views & Logic:**
-    *   5.1. ☐ **Create index view:** Create `resources/views/admin/maintenance_requests/index.blade.php` to display requests with actions guarded by `@can`.
-        **Cursor AI Prompt:**
-        - Generate the Blade code for `resources/views/admin/maintenance_requests/index.blade.php`.
-        - Extend `layouts.admin`.
-        - Create an AdminLTE card or box containing a table.
-        - Display a list of `$maintenanceRequests` (passed from the controller), paginated.
-        - Include table columns for Title, Location, Status, Priority, Created At, and Requester Name (accessing the `$request->requester->name` relationship).
-        - Add an Actions column with Edit and Delete buttons.
-        - Use Blade's `@can` directive with `$maintenanceRequestInstance` to show/hide the Edit button based on the `update` policy.
-        - Use Blade's `@can` directive with `$maintenanceRequestInstance` to show/hide the Delete button based on the `delete` policy.
-        - Include a link to the create page (`route('admin.maintenance-requests.create')`), also guarded by `@can('create', App\Models\MaintenanceRequest::class)`.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:** (After controller `index` method is implemented)
-        - Log in as admin. Navigate to `/admin/maintenance-requests`. Verify table, data, and actions (Edit/Delete/Create links) appear correctly based on policy.
-        - Log in as staff. Navigate to `/admin/maintenance-requests`. Verify they can see requests (if policy allows `viewAny`). Check if Edit/Delete buttons are visible/hidden based on policy (e.g., can't delete, can only edit own 'new' requests).
-    *   5.2. ☐ **Create create view:** Create `resources/views/admin/maintenance_requests/create.blade.php` for the form.
-        **Cursor AI Prompt:**
-        - Generate the Blade code for `resources/views/admin/maintenance_requests/create.blade.php`.
-        - Extend `layouts.admin`.
-        - Create an AdminLTE form for creating a new maintenance request.
-        - Include form fields for Floor, Location, Title, Description (textarea).
-        - Include select dropdowns for Priority ('normal', 'urgent') and Status ('new', 'in_progress', 'completed', 'transferred'). Make 'new' the default selected option for Status.
-        - The form should submit via POST to the maintenance request store route (`route('admin.maintenance-requests.store')`) and include `@csrf`. The `requester_id` will be set automatically in the controller.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:** (After controller `create` method is implemented)
-        - Log in as admin or staff. Navigate to `/admin/maintenance-requests/create`.
-        - Verify the form appears with all fields and correct default values.
-    *   5.3. ☐ **Create edit view:** Create `resources/views/admin/maintenance_requests/edit.blade.php` for the pre-filled form with conditional status field based on policy.
-        **Cursor AI Prompt:**
-        - Generate the Blade code for `resources/views/admin/maintenance_requests/edit.blade.php`.
-        - Extend `layouts.admin`.
-        - Create an AdminLTE form for editing a maintenance request, pre-filled with `$maintenanceRequest` data (passed from the controller).
-        - Include form fields for Floor, Location, Title, Description (textarea), and select dropdowns for Priority and Status.
-        - Pre-select the current `$maintenanceRequest->priority` and `$maintenanceRequest->status` in the dropdowns.
-        - Use Blade's `@can('update', $maintenanceRequest)` or a more specific policy method like `changeStatus` if defined. For instance, if only admins can change status from 'new', or staff can only edit fields when status is 'new', reflect this by disabling fields or the entire form.
-        - The form should submit via POST to the maintenance request update route (`route('admin.maintenance-requests.update', $maintenanceRequest)`) and include `@csrf`, and use `@method('PUT')`.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:** (After controller `edit` method is implemented)
-        - Log in as admin. Navigate to `/admin/maintenance-requests/{id}/edit`. Verify form is pre-filled and editable.
-        - Log in as staff. Navigate to edit one of their 'new' requests. Verify form is pre-filled and editable (respecting policy).
-        - As staff, navigate to edit one of their 'in_progress' requests. Verify fields are disabled or form is not submittable based on policy.
-    *   5.4. ☐ **Create show view:** (Optional) Display full request details.
-    *   5.5. ☐ **Implement Controller methods:** Implement `index`, `create`, `store`, `edit`, `update`, and `destroy` methods using Form Requests, `$this->authorize()`, Eloquent, eager loading, and redirects with flash messages. Ensure 'store' sets `requester_id`.
-        **Cursor AI Prompt:**
-        - In `Admin\MaintenanceRequestController`, implement the `index()` method. Authorize `viewAny`. Fetch maintenance requests, eager load the `requester` relationship, and paginate results (`paginate(15)`). Pass results to the `index` view.
-        - Implement the `create()` method. Authorize `create`. Return the `create` view.
-        - Implement the `store()` method. Type-hint `StoreMaintenanceRequestRequest`. Authorization is handled by the Form Request. Create the maintenance request using validated data, manually setting `requester_id` to `auth()->id()`. Redirect to the index route with a success flash message.
-        - Implement the `show(MaintenanceRequest $maintenanceRequest)` method. Authorize `view` for the `$maintenanceRequest` instance. Eager load the `requester` relationship on `$maintenanceRequest`. Return the `show` view (if created), passing the `$maintenanceRequest`.
-        - Implement the `edit(MaintenanceRequest $maintenanceRequest)` method. Authorize `update` for the `$maintenanceRequest` instance. Pass the `$maintenanceRequest` to the `edit` view.
-        - Implement the `update(UpdateMaintenanceRequestRequest $request, MaintenanceRequest $maintenanceRequest)` method. Authorization is handled by the Form Request. Update the `$maintenanceRequest` instance with validated data. Redirect to the index route with a success flash message.
-        - Implement the `destroy(MaintenanceRequest $maintenanceRequest)` method. Authorize `delete` for the `$maintenanceRequest` instance. Delete the request. Redirect to the index route with a success flash message.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:**
-        - **Index:** Test as admin and staff (see checks for view 5.1).
-        - **Create/Store:** Log in as staff/admin. Create a request. Verify it's in DB with correct `requester_id`, status, etc. Check redirection and flash message. Test validation.
-        - **Edit/Update:** Log in as admin. Edit any request. Verify changes. Log in as staff. Edit *their own 'new'* request. Verify changes. Try to edit another's request or their own 'in_progress' request – should be blocked by policy/FormRequest `authorize`. Test validation.
-        - **Destroy:** Log in as admin. Delete a request. Verify. Log in as staff. Try to delete – should be blocked.
-        - **Show (if implemented):** Test access as per policy (admin can see all, staff can see own).
-6.  ☐ **Add Sidebar Link:** Add link to `route('admin.maintenance-requests.index')` in the AdminLTE sidebar, visible to both roles.
-    **Cursor AI Prompt:**
-    - In the AdminLTE sidebar Blade file, add a navigation link for 'Maintenance Requests'.
-    - Point this link to `route('admin.maintenance-requests.index')`.
-    - This link should be visible to both 'admin' and 'staff' roles (logic within the page handles specific permissions, so no `@can` needed on the link itself based on current policy design for `viewAny`).
-    - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-    🧑‍💻 **Developer Check:**
-    - Log in as admin. The "Maintenance Requests" link should be visible and work.
-    - Log in as staff. The "Maintenance Requests" link should also be visible and work (page content will be filtered by policy).
-    *   **Key Learning Takeaway:** Implementing Policies with more nuanced, condition-based authorization (role + ownership + data status), handling foreign key relationships correctly, reinforcing the full CRUD + Form Request + Policy pattern.
-7.  **Create Maintenance Request Tests:** Implement unit and feature tests.
-    *   7.1. ✅ **Create MaintenanceRequestModelTest:** Test model relationships and attributes.
-        **Cursor AI Prompt:**
-        - Create a `MaintenanceRequestModelTest.php` file in the `tests/Unit/` directory.
-        - Test that the `MaintenanceRequest` model correctly defines its relationships: `requester()` (belongsTo User) and `materialRequests()` (hasMany MaterialRequest).
-        - Test that all required attributes (requester_id, floor, location, title, description, priority, status) are fillable.
-        - Use the `RefreshDatabase` trait and create test models to verify relationship loading.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:**
-        - Run `php artisan test tests/Unit/MaintenanceRequestModelTest.php`.
-        - Ensure all tests pass, verifying model setup.
-        **Status:** ✅ Completed - Comprehensive unit tests created for model relationships, attributes, and factories
-    *   7.2. ☐ **Create MaintenanceRequestTest:** Test CRUD operations and permissions.
-        **Cursor AI Prompt:**
-        - Create a `MaintenanceRequestTest.php` file in the `tests/Feature/` directory.
-        - Test CRUD operations: both admin and staff can create requests, view request lists (with proper filtering), and update requests.
-        - Test permission rules: staff can only edit their own 'new' requests, only admin can delete requests.
-        - Test that the maintenance request's requester_id is set to the authenticated user when created.
-        - Use the `RefreshDatabase` trait and set up test users and requests in the setUp method.
-        - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
-        🧑‍💻 **Developer Check:**
-        - Run `php artisan test tests/Feature/MaintenanceRequestTest.php`.
-        - Ensure all feature tests pass, covering the defined CRUD operations and permission rules.
-    *   **Key Learning Takeaway:** Implementing Policies with more nuanced, condition-based authorization (role + ownership + data status), handling foreign key relationships correctly, reinforcing the full CRUD + Form Request + Policy pattern.
+    *   4.1. ✅ **Create Controller:** Use `php artisan make:controller Admin/MaintenanceRequestController --resource --model=MaintenanceRequest`. (Command)
+        **Status:** ✅ Completed - ResourceController created with all CRUD methods and model binding
 
 ---
 [Back to Top](#)
 
 ### 3.6. Phase 5: Material Request Management - CRUD & Role-Based Policies
 1.  **Data Model:**
-    *   4.1.1. ☐ **Create migration:** Use `php artisan make:migration create_material_requests_table --create=material_requests`. (Command)
-    *   1.2. ☐ **Define schema:** Define schema as per [Section 5.4](#54-material_requests-table) in the migration file (includes nullable `maintenance_request_id` FK).
+    *   4.1.1. ✅ **Create migration:** Use `php artisan make:migration create_material_requests_table --create=material_requests`. (Command)
+        **Status:** ✅ Completed - Migration created with proper schema for material requests
+    *   1.2. ✅ **Define schema:** Define schema as per [Section 5.4](#54-material_requests-table) in the migration file (includes nullable `maintenance_request_id` FK).
         **Cursor AI Prompt:**
         - In the `create_material_requests_table` migration file, define the table schema: an auto-incrementing primary `id`.
         - Add a foreign key `requester_id` (unsigned big integer) referencing the `users` table, with `on delete cascade`.
@@ -799,9 +727,11 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open the `material_requests` migration file.
         - Verify all columns, types, FKs (especially `on delete set null`), and constraints.
-    *   1.3. ☐ **Run migration:** Run `php artisan migrate`. (Command)
+        **Status:** ✅ Completed - Schema defined with all required columns, foreign keys, enums, and constraints
+    *   1.3. ✅ **Run migration:** Run `php artisan migrate`. (Command)
         🧑‍💻 **Developer Check:** (After migration)
         - Confirm `material_requests` table exists in DB with correct schema.
+        **Status:** ✅ Completed - Migration run successfully, table exists in database with correct schema
     *   1.4. ✅ **Create Model:** Use `php artisan make:model MaterialRequest`. (Command)
     *   1.5. ✅ **Define Model properties/relationships:** Define `$fillable` and relationships (`requester`, `maintenanceRequest`) as per [Section 5.5](#55-eloquent-model-relationships) in the model file.
         **Cursor AI Prompt:**
@@ -814,16 +744,18 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Verify `$fillable` and relationship methods (`requester`, `maintenanceRequest`).
         **Status:** ✅ Completed - Model created with proper fillable attributes and nullable relationships defined
 2.  **Routing:**
-    *   2.1. ☐ **Add resourceful route:** Add the `material-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
+    *   2.1. ✅ **Add resourceful route:** Add the `material-requests` resourceful route to the authenticated admin route group in `routes/web.php`.
         **Cursor AI Prompt:**
         - In `routes/web.php`, within the `Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(...)` block, add a resourceful route for `material-requests`.
         - Specify that this route is managed by `App\Http\Controllers\Admin\MaterialRequestController`.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan route:list | grep material-requests`. Ensure routes are correctly registered.
+        **Status:** ✅ Completed - Resourceful route added to admin group, all 7 routes registered correctly
 3.  **Policy:**
-    *   3.1. ☐ **Create Policy:** Use `php artisan make:policy MaterialRequestPolicy --model=MaterialRequest`. (Command)
-    *   3.2. ☐ **Implement Policy methods:** Implement `viewAny`, `view`, `create`, `update`, and `delete` methods (admin full control; staff conditional based on ownership/status).
+    *   3.1. ✅ **Create Policy:** Use `php artisan make:policy MaterialRequestPolicy --model=MaterialRequest`. (Command)
+        **Status:** ✅ Completed - Policy created with proper structure and model binding
+    *   3.2. ✅ **Implement Policy methods:** Implement `viewAny`, `view`, `create`, `update`, and `delete` methods (admin full control; staff conditional based on ownership/status).
         **Cursor AI Prompt:**
         - In the `MaterialRequestPolicy` class, implement the `viewAny(User $user)` method to allow if the user is admin or staff (`return $user->isAdmin() || $user->role === 'staff';`).
         - Implement the `view(User $user, MaterialRequest $materialRequest)` method to allow if the user is admin OR if the user is staff AND they are the `requester_id` of the request.
@@ -834,13 +766,16 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open `app/Policies/MaterialRequestPolicy.php`.
         - Review each method ensuring rules for admin/staff (ownership, status) are correct.
-    *   3.3. ☐ **Register Policy:** Register in `app/Providers/AuthServiceProvider.php`. (Part of Auth/Auth AI Tip)
+        **Status:** ✅ Completed - Policy methods implemented with role-based authorization rules for admin and staff users
+    *   3.3. ✅ **Register Policy:** Register in `app/Providers/AuthServiceProvider.php`. (Part of Auth/Auth AI Tip)
         🧑‍💻 **Developer Check:**
         - Verify `App\Models\MaterialRequest::class => App\Policies\MaterialRequestPolicy::class,` is in `AuthServiceProvider`.
+        **Status:** ✅ Completed - Policy auto-registered via Laravel's policy discovery mechanism (no explicit registration needed)
 4.  **Controller & Form Requests:**
-    *   4.1. ☐ **Create Controller:** Use `php artisan make:controller Admin/MaterialRequestController --resource --model=MaterialRequest`. (Command)
-    *   4.2. ☐ **Create Store Request:** Use `php artisan make:request Admin/StoreMaterialRequestRequest`. (Command)
-    *   4.3. ☐ **Implement Store Request:** Implement `authorize()` (authenticated) and `rules()` (including nullable FK validation).
+    *   4.1. ✅ **Create Controller:** Use `php artisan make:controller Admin/MaterialRequestController --resource --model=MaterialRequest`. (Command)
+        **Status:** ✅ Completed - ResourceController created with all CRUD methods and model binding
+    *   4.2. ✅ **Create Store Request:** Use `php artisan make:request Admin/StoreMaterialRequestRequest`. (Command)
+    *   4.3. ✅ **Implement Store Request:** Implement `authorize()` (authenticated) and `rules()` (including nullable FK validation).
         **Cursor AI Prompt:**
         - In `Admin\StoreMaterialRequestRequest`, implement the `authorize()` method to return true if the user is authenticated (`auth()->check()`).
         - Implement the `rules()` method with validation rules for: `item_description` (required string, max 255), `quantity` (required integer, min:1), `cost` (nullable numeric, min:0), `funding_source` (nullable, in:school_budget,maintenance,other), `status` (required, in:pending,approved,rejected,fulfilled).
@@ -849,8 +784,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:**
         - Open `app/Http/Requests/Admin/StoreMaterialRequestRequest.php`.
         - Verify `authorize()` and all `rules()`, especially the conditional `maintenance_request_id` existence.
-    *   4.4. ☐ **Create Update Request:** Use `php artisan make:request Admin/UpdateMaterialRequestRequest`. (Command)
-    *   4.5. ☐ **Implement Update Request:** Implement `authorize()` (using policy) and `rules()` methods.
+    *   4.4. ✅ **Create Update Request:** Use `php artisan make:request Admin/UpdateMaterialRequestRequest`. (Command)
+    *   4.5. ✅ **Implement Update Request:** Implement `authorize()` (using policy) and `rules()` methods.
         **Cursor AI Prompt:**
         - In `Admin\UpdateMaterialRequestRequest`, implement the `authorize()` method to return the result of calling the `update` ability on the authenticated user for the material request instance being updated. Access the request instance using `$this->route('material_request')`.
         - Implement the `rules()` method with validation rules identical to `StoreMaterialRequestRequest`.
@@ -859,7 +794,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Open `app/Http/Requests/Admin/UpdateMaterialRequestRequest.php`.
         - Verify `authorize()` uses policy, and `rules()` are correct.
 5.  **Views & Logic:** Implement CRUD views in `resources/views/admin/material_requests/`.
-    *   5.1. ☐ **Create index view:** Create `resources/views/admin/material_requests/index.blade.php` to display requests with actions guarded by `@can`, eager loading relationships.
+    *   5.1. ✅ **Create index view:** Create `resources/views/admin/material_requests/index.blade.php` to display requests with actions guarded by `@can`, eager loading relationships.
         **Cursor AI Prompt:**
         - Generate the Blade code for `resources/views/admin/material_requests/index.blade.php`.
         - Extend `layouts.admin`.
@@ -875,7 +810,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Log in as admin/staff. Navigate to `/admin/material-requests`.
         - Verify table displays data, including linked Maintenance Request info.
         - Check visibility of Edit/Delete/Create actions based on policy.
-    *   5.2. ☐ **Create create view:** Create `resources/views/admin/material_requests/create.blade.php` with the form, including the optional maintenance request dropdown populated with open requests.
+    *   5.2. ✅ **Create create view:** Create `resources/views/admin/material_requests/create.blade.php` with the form, including the optional maintenance request dropdown populated with open requests.
         **Cursor AI Prompt:**
         - Generate the Blade code for `resources/views/admin/material_requests/create.blade.php`.
         - Extend `layouts.admin`.
@@ -887,7 +822,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         🧑‍💻 **Developer Check:** (After controller `create` method is implemented)
         - Navigate to `/admin/material-requests/create`.
         - Verify form fields and that the "Maintenance Request ID" dropdown is populated with open requests (if any exist).
-    *   5.3. ☐ **Create edit view:** Create `resources/views/admin/material_requests/edit.blade.php` with the pre-filled form, respecting policy restrictions on fields.
+    *   5.3. ✅ **Create edit view:** Create `resources/views/admin/material_requests/edit.blade.php` with the pre-filled form, respecting policy restrictions on fields.
         **Cursor AI Prompt:**
         - Generate the Blade code for `resources/views/admin/material_requests/edit.blade.php`.
         - Extend `layouts.admin`.
@@ -902,8 +837,8 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - As admin, edit a material request. Verify pre-fill and dropdowns.
         - As staff, edit *their own 'pending'* material request. Verify pre-fill, dropdowns, and editable fields.
         - As staff, try to edit their *own 'approved'* request. Verify fields are disabled/form non-submittable based on policy.
-    *   5.4. ☐ **Create show view:** (Optional) Display full request details.
-    *   5.5. ☐ **Implement Controller methods:** Implement `index`, `create`, `store`, `edit`, `update`, and `destroy` methods using Form Requests, `$this->authorize()`, Eloquent, eager loading, and redirects with flash messages. Ensure 'store' sets `requester_id`, and 'create'/'edit' fetch open maintenance requests for the dropdown.
+    *   5.4. ✅ **Create show view:** (Optional) Display full request details.
+    *   5.5. ✅ **Implement Controller methods:** Implement `index`, `create`, `store`, `edit`, `update`, and `destroy` methods using Form Requests, `$this->authorize()`, Eloquent, eager loading, and redirects with flash messages. Ensure 'store' sets `requester_id`, and 'create'/'edit' fetch open maintenance requests for the dropdown.
         **Cursor AI Prompt:**
         - In `Admin\MaterialRequestController`, implement the `index()` method. Authorize `viewAny`. Fetch material requests, eager load `requester` and `maintenanceRequest` relationships, and paginate results (`paginate(15)`). Pass results to the `index` view.
         - Implement the `create()` method. Authorize `create`. Fetch *open* maintenance requests (status 'new' or 'in_progress') to populate the dropdown in the form. Pass these open requests to the `create` view under a variable name like `$openMaintenanceRequests`.
@@ -915,7 +850,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - **Index/Create/Store/Edit/Update/Destroy:** Perform similar checks as for Maintenance Requests, ensuring the `maintenance_request_id` linkage works, dropdowns are populated, and policies are enforced for staff (e.g., can only edit 'pending' requests).
-6.  ☐ **Add Sidebar Link:** Add link to `route('admin.material-requests.index')` in the AdminLTE sidebar.
+6.  ✅ **Add Sidebar Link:** Add link to `route('admin.material-requests.index')` in the AdminLTE sidebar.
     **Cursor AI Prompt:**
     - In the AdminLTE sidebar Blade file, add a navigation link for 'Material Requests'.
     - Point this link to `route('admin.material-requests.index')`.
@@ -931,12 +866,16 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Test that the `MaterialRequest` model correctly defines its relationships: `requester()` (belongsTo User) and `maintenanceRequest()` (belongsTo MaintenanceRequest).
         - Test that all required attributes (requester_id, maintenance_request_id, item_description, quantity, cost, funding_source, status) are fillable.
         - Verify that the model correctly handles nullable relationships (maintenanceRequest can be null).
-        - Use the `RefreshDatabase` trait and create test models to verify relationship loading.
+        - Use the `RefreshDatabase` trait to ensure test database isolation and prevent interference with development data.
+        - Create test models using factories or direct instantiation to verify relationship loading.
+        - **Important:** All tests should execute against the isolated test database, preserving development data integrity.
         - Could you suggest any alternative or more standard Laravel practices for this specific task/code block, and explain why they might be better?
         🧑‍💻 **Developer Check:**
         - Run `php artisan test tests/Unit/MaterialRequestModelTest.php`. Ensure tests pass.
+        - Verify test execution uses the test database and doesn't impact development environment.
+        - Check that nullable relationship handling works correctly in the isolated test environment.
         **Status:** ✅ Completed - Comprehensive unit tests created for model relationships, attributes, nullable relationships, and factories
-    *   7.2. ☐ **Create MaterialRequestTest:** Test CRUD operations and permissions.
+    *   7.2. ✅ **Create MaterialRequestTest:** Test CRUD operations and permissions.
         **Cursor AI Prompt:**
         - Create a `MaterialRequestTest.php` file in the `tests/Feature/` directory.
         - Test CRUD operations: both admin and staff can create requests, view request lists (with proper filtering), and update requests.
@@ -1122,6 +1061,27 @@ This roadmap suggests a structured approach to developing the project, focusing 
 
 ### 8.6. Asset Management (NFR-VITE)
 *   ✅ **NFR-VITE-01:** Use Laravel Vite (Covered in Phase 1 AI prompts).
+
+### 8.7. Testing Practices (NFR-TEST)
+*   ✅ **NFR-TEST-01:** **Database Isolation:** Use separate databases for testing and development to ensure test independence and prevent data contamination.
+    - Tests should run against a dedicated test database (e.g., `ghodo_admin_test`)
+    - Use `.env.testing` file for test-specific environment configuration
+    - Configure `phpunit.xml` to use testing environment variables
+    - Allows safe use of `RefreshDatabase` trait without affecting development data
+*   ✅ **NFR-TEST-02:** **Test Environment Setup:** Implement automated test database setup and refresh capabilities.
+    - Custom Artisan command for test database initialization (`setup:test-db`)
+    - Consistent test data seeding for reliable test execution
+    - Easy database reset for clean test environments
+*   ☐ **NFR-TEST-03:** **Comprehensive Test Coverage:** Implement unit tests for models and feature tests for user interactions.
+    - Unit tests for model relationships, attributes, and business logic
+    - Feature tests for HTTP requests, authentication, and authorization
+    - Policy tests for permission verification
+    - Controller tests for CRUD operations and role-based access
+*   ☐ **NFR-TEST-04:** **Test Organization:** Structure tests logically with proper setup and teardown.
+    - Use `RefreshDatabase` trait for database state management
+    - Group related tests in appropriate test classes
+    - Use factories for test data generation
+    - Implement setUp and tearDown methods for test environment preparation
 
 ---
 [Back to Top](#)

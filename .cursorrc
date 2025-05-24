@@ -91,4 +91,10 @@ Follow these global rules in your response:
         * Your alternative approach with a clear explanation of its advantages
     d.  **Progress Tracking:** After completing each task, update the SRS document with a checkmark (✅) next to the completed step.
 
+15. **Database Best Practices:**
+    For the `ghodo-school-admin` Laravel project:
+    a.  **Environment Separation:** Always use separate databases for development (`ghodo_admin_db`) and testing (`ghodo_admin_test`) environments.
+    b.  **Test Isolation:** Emphasize use of RefreshDatabase trait and proper test database configuration to prevent development data contamination.
+    c.  **Laravel Standards:** Follow Laravel conventions for migrations, seeders, factories, and Eloquent relationships.
+
 ---
