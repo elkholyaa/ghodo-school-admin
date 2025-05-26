@@ -171,12 +171,14 @@
                             </a>
                         </li>
                         @endcan
+                        @can('viewAny', App\Models\MaintenanceRequest::class)
                         <li class="nav-item">
-                            <a href="#" class="nav-link" onclick="alert('{{ __('messages.feature_coming_soon') }}');">
+                            <a href="{{ route('admin.maintenance-requests.index') }}" class="nav-link">
                                 <i class="nav-icon fas fa-tools"></i>
                                 <p>{{ __('messages.maintenance_requests') }}</p>
                             </a>
                         </li>
+                        @endcan
                         @can('viewAny', App\Models\MaterialRequest::class)
                         <li class="nav-item">
                             <a href="{{ route('admin.material-requests.index') }}" class="nav-link">
