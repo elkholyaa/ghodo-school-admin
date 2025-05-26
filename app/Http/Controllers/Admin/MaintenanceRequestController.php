@@ -101,7 +101,7 @@ class MaintenanceRequestController extends Controller
         
         // Redirect with success message
         return redirect()->route('admin.maintenance-requests.index')
-                         ->with('success', __('messages.maintenance_request_created'));
+                         ->with('success', __('messages.created_success'));
     }
 
     /**
@@ -161,7 +161,7 @@ class MaintenanceRequestController extends Controller
         
         // Redirect with success message
         return redirect()->route('admin.maintenance-requests.index')
-                         ->with('success', __('messages.maintenance_request_updated'));
+                         ->with('success', __('messages.updated_success'));
     }
 
     /**
@@ -180,6 +180,6 @@ class MaintenanceRequestController extends Controller
         
         // Redirect with success message
         return redirect()->route('admin.maintenance-requests.index')
-                         ->with('success', __('messages.maintenance_request_deleted'));
+                         ->with('success', __('messages.deleted_success'));
     }
 }

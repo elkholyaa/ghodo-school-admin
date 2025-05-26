@@ -88,7 +88,7 @@ class MaterialRequestController extends Controller
         MaterialRequest::create($validatedData);
         
         return redirect()->route('admin.material-requests.index')
-            ->with('success', 'Material request created successfully!');
+            ->with('success', __('messages.created_success'));
     }
 
     /**
@@ -149,7 +149,7 @@ class MaterialRequestController extends Controller
         $materialRequest->update($validatedData);
         
         return redirect()->route('admin.material-requests.index')
-            ->with('success', 'Material request updated successfully!');
+            ->with('success', __('messages.updated_success'));
     }
 
     /**
@@ -164,6 +164,6 @@ class MaterialRequestController extends Controller
         $materialRequest->delete();
         
         return redirect()->route('admin.material-requests.index')
-            ->with('success', 'Material request deleted successfully!');
+            ->with('success', __('messages.deleted_success'));
     }
 }
