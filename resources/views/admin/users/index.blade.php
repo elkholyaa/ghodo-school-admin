@@ -37,9 +37,9 @@
                             <tr>
                                 <th>{{ __('messages.ID') }}</th>
                                 <th>{{ __('messages.name') }}</th>
-                                <th>{{ __('messages.email') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('messages.email') }}</th>
                                 <th>{{ __('messages.Role') }}</th>
-                                <th>{{ __('messages.Created At') }}</th>
+                                <th class="d-none d-md-table-cell">{{ __('messages.Created At') }}</th>
                                 <th style="width: 150px;">{{ __('messages.Actions') }}</th>
                             </tr>
                         </thead>
@@ -48,13 +48,13 @@
                                 <tr>
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
+                                    <td class="d-none d-md-table-cell">{{ $user->email }}</td>
                                     <td>
                                         <span class="badge {{ $user->isAdmin() ? 'badge-danger' : 'badge-info' }}">
                                             {{ $user->role }}
                                         </span>
                                     </td>
-                                    <td>{{ $user->created_at->format('Y-m-d') }}</td>
+                                    <td class="d-none d-md-table-cell">{{ $user->created_at->format('Y-m-d') }}</td>
                                     <td>
                                         <div class="btn-group">
                                             @can('view', $user)

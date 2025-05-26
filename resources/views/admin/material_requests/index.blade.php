@@ -55,11 +55,11 @@
                                     <th>{{ __('messages.ID') }}</th>
                                     <th>{{ __('messages.Item Description') }}</th>
                                     <th>{{ __('messages.Quantity') }}</th>
-                                    <th>{{ __('messages.Cost') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.Cost') }}</th>
                                     <th>{{ __('messages.Status') }}</th>
-                                    <th>{{ __('messages.Requester') }}</th>
-                                    <th>{{ __('messages.Maintenance Request') }}</th>
-                                    <th>{{ __('messages.Created At') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.Requester') }}</th>
+                                    <th class="d-none d-lg-table-cell">{{ __('messages.Maintenance Request') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.Created At') }}</th>
                                     <th>{{ __('messages.Actions') }}</th>
                                 </tr>
                             </thead>
@@ -67,9 +67,9 @@
                                 @foreach($materialRequests as $materialRequest)
                                     <tr>
                                         <td>{{ $materialRequest->id }}</td>
-                                        <td>{{ $materialRequest->item_description }}</td>
+                                        <td>{{ Str::limit($materialRequest->item_description, 30) }}</td>
                                         <td>{{ $materialRequest->quantity }}</td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">
                                             @if($materialRequest->cost)
                                                 ${{ number_format($materialRequest->cost, 2) }}
                                             @else
@@ -94,18 +94,18 @@
                                                     <span class="badge badge-secondary">{{ ucfirst($materialRequest->status) }}</span>
                                             @endswitch
                                         </td>
-                                        <td>{{ $materialRequest->requester->name }}</td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">{{ $materialRequest->requester->name }}</td>
+                                        <td class="d-none d-lg-table-cell">
                                             @if($materialRequest->maintenanceRequest)
                                                 <a href="{{ route('admin.maintenance-requests.show', $materialRequest->maintenanceRequest) }}" 
                                                    class="text-primary">
-                                                    #{{ $materialRequest->maintenanceRequest->id }} - {{ Str::limit($materialRequest->maintenanceRequest->title, 30) }}
+                                                    #{{ $materialRequest->maintenanceRequest->id }} - {{ Str::limit($materialRequest->maintenanceRequest->title, 20) }}
                                                 </a>
                                             @else
                                                 <span class="text-muted">{{ __('messages.Standalone Request') }}</span>
                                             @endif
                                         </td>
-                                        <td>{{ $materialRequest->created_at->format('Y-m-d H:i') }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $materialRequest->created_at->format('Y-m-d') }}</td>
                                         <td>
                                             <div class="btn-group" role="group">
                                                 @can('view', $materialRequest)

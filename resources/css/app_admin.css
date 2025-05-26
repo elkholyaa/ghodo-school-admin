@@ -166,4 +166,83 @@ html[dir="rtl"] .mr-auto {
     .sidebar-open .wrapper .content-wrapper {
         margin-right: 250px !important;
     }
+    
+    /* Additional mobile fixes */
+    html[dir="rtl"] .card-tools {
+        float: left;
+    }
+    
+    /* Fix mobile table overflow */
+    .table-responsive {
+        padding: 0;
+    }
+    
+    .table-responsive table {
+        width: 100%;
+        min-width: 500px; /* Ensures horizontal scrolling on very small screens */
+    }
+    
+    /* Ensure buttons in tables stay visible */
+    .btn-group {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    
+    /* Improve mobile forms */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Adjust card padding on mobile */
+    .card-body {
+        padding: 1rem;
+    }
+    
+    /* Fix RTL form elements on mobile */
+    html[dir="rtl"] .form-control {
+        text-align: right;
+    }
+    
+    html[dir="rtl"] .form-check-input {
+        margin-right: -1.25rem;
+        margin-left: 0;
+    }
+    
+    /* Fix RTL badge alignment */
+    html[dir="rtl"] .badge {
+        margin-left: 0.25rem;
+        margin-right: 0;
+    }
+    
+    /* Better RTL pagination on mobile */
+    html[dir="rtl"] .pagination {
+        justify-content: center;
+    }
+}
+
+/* General responsive improvements */
+@media (max-width: 575.98px) {
+    /* Very small screens */
+    h1, .h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card-title {
+        font-size: 1.2rem;
+    }
+    
+    .breadcrumb {
+        display: none;
+    }
+    
+    /* Optimize action buttons on very small screens */
+    .btn-sm {
+        padding: 0.25rem 0.4rem;
+        font-size: 0.7rem;
+    }
+    
+    /* Ensure mobile form inputs are large enough to tap */
+    .form-control, .btn {
+        min-height: 38px;
+    }
 }

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Ghodo School Admin') }}</title>
 
@@ -89,6 +89,21 @@
             right: auto;
             left: 10px;
         }
+        
+        /* Responsive improvements */
+        @media (max-width: 767.98px) {
+            .brand-text {
+                font-size: 1rem;
+            }
+            
+            .dropdown-menu-lg {
+                width: 250px;
+            }
+            
+            .nav-link {
+                padding: 0.5rem 0.75rem;
+            }
+        }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed text-sm">
@@ -112,7 +127,7 @@
                 <li class="nav-item dropdown user-menu">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-user-circle mr-2"></i>
-                        <span>{{ Auth::user()->name }}</span>
+                        <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <li class="user-header bg-primary">
@@ -244,7 +259,7 @@
         <!-- Footer -->
         <footer class="main-footer">
             <strong>{{ __('messages.copyright') }} &copy; {{ date('Y') }} <a href="#">{{ config('app.name', 'Ghodo School Admin') }}</a>.</strong>
-            {{ __('messages.all_rights_reserved') }}
+            <span class="d-none d-md-inline">{{ __('messages.all_rights_reserved') }}</span>
             <div class="float-left d-none d-sm-inline-block">
                 <b>{{ __('messages.version') }}</b> 1.0.0
             </div>
@@ -292,6 +307,14 @@
                     alert('{{ __("messages.feature_coming_soon") }}');
                 }
             });
+            
+            // Add touch-friendly behavior for mobile
+            if (window.innerWidth < 768) {
+                $('.dropdown-toggle').on('click', function(e) {
+                    e.preventDefault();
+                    $(this).dropdown('toggle');
+                });
+            }
         });
     </script>
 </body>

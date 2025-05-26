@@ -39,11 +39,11 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>{{ __('messages.title') }}</th>
-                                    <th>{{ __('messages.location') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.location') }}</th>
                                     <th>{{ __('messages.priority') }}</th>
                                     <th>{{ __('messages.status') }}</th>
-                                    <th>{{ __('messages.requester') }}</th>
-                                    <th>{{ __('messages.created_at') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.requester') }}</th>
+                                    <th class="d-none d-md-table-cell">{{ __('messages.created_at') }}</th>
                                     <th>{{ __('messages.actions') }}</th>
                                 </tr>
                             </thead>
@@ -51,8 +51,8 @@
                                 @forelse ($maintenanceRequests as $request)
                                 <tr>
                                     <td>{{ $request->id }}</td>
-                                    <td>{{ $request->title }}</td>
-                                    <td>
+                                    <td>{{ Str::limit($request->title, 30) }}</td>
+                                    <td class="d-none d-md-table-cell">
                                         @if($request->floor)
                                             {{ $request->floor }} - 
                                         @endif
@@ -83,11 +83,10 @@
                                                 <span class="badge badge-light">{{ $request->status }}</span>
                                         @endswitch
                                     </td>
-                                    <td>
-                                        <!-- This line demonstrates the eager loading benefit -->
+                                    <td class="d-none d-md-table-cell">
                                         {{ $request->requester->name }}
                                     </td>
-                                    <td>{{ $request->created_at->format('Y-m-d') }}</td>
+                                    <td class="d-none d-md-table-cell">{{ $request->created_at->format('Y-m-d') }}</td>
                                     <td>
                                         <div class="btn-group">
                                             @can('view', $request)
