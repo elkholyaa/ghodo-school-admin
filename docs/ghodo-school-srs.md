@@ -947,7 +947,7 @@ This roadmap suggests a structured approach to developing the project, focusing 
         - Visit the material requests index page.
         - Use Laravel Debugbar to verify that eager loading for `requester` and `maintenanceRequest` has reduced the number of database queries compared to not using `->with()`.
 3.  **UI/UX Polish:**
-    *   3.1. ☐ **Arabic Labels:** Ensure all forms have clear Arabic labels from localization files. (Manual task using `__('...')`)
+    *   3.1. ✅ **Arabic Labels:** Ensure all forms have clear Arabic labels from localization files. (Manual task using `__('...')`)
     *   3.2. ✅ **Flash Messages:** Implement consistent flash messages (e.g., using `session()->flash('success', 'Message')`) for create, update, delete actions, and display them in your `layouts.admin` Blade file.
         **Cursor AI Prompt:**
         - In the `layouts/admin.blade.php` file, add Blade code within the main content area (e.g., right below the header or content-header) to check for and display success, error, or warning flash messages stored in the session using keys like `success`, `error`, `warning`.

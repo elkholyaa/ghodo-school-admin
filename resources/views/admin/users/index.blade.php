@@ -5,12 +5,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">{{ __('Users Management') }}</h1>
+                <h1 class="m-0">{{ __('messages.user_management') }}</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li class="breadcrumb-item active">{{ __('Users') }}</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.dashboard') }}</a></li>
+                    <li class="breadcrumb-item active">{{ __('messages.Users') }}</li>
                 </ol>
             </div>
         </div>
@@ -21,11 +21,11 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ __('Users List') }}</h3>
+                <h3 class="card-title">{{ __('messages.users_list') }}</h3>
                 <div class="card-tools">
                     @can('create', App\Models\User::class)
                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> {{ __('Create New User') }}
+                            <i class="fas fa-plus"></i> {{ __('messages.Create New User') }}
                         </a>
                     @endcan
                 </div>
@@ -35,12 +35,12 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>{{ __('ID') }}</th>
-                                <th>{{ __('Name') }}</th>
-                                <th>{{ __('Email') }}</th>
-                                <th>{{ __('Role') }}</th>
-                                <th>{{ __('Created At') }}</th>
-                                <th style="width: 150px;">{{ __('Actions') }}</th>
+                                <th>{{ __('messages.ID') }}</th>
+                                <th>{{ __('messages.name') }}</th>
+                                <th>{{ __('messages.email') }}</th>
+                                <th>{{ __('messages.Role') }}</th>
+                                <th>{{ __('messages.Created At') }}</th>
+                                <th style="width: 150px;">{{ __('messages.Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,7 +71,7 @@
                                             
                                             @can('delete', $user)
                                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" 
-                                                      onsubmit="return confirm('{{ __('Are you sure you want to delete this user?') }}');">
+                                                      onsubmit="return confirm('{{ __('messages.confirm_delete_user') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm">
@@ -84,7 +84,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">{{ __('No users found') }}</td>
+                                    <td colspan="6" class="text-center">{{ __('messages.no_users_found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
