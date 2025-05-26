@@ -190,4 +190,15 @@ return [
     'Status Information' => 'معلومات الحالة',
     'This request is awaiting approval' => 'هذا الطلب في انتظار الموافقة',
     'You can still edit this request since it is pending' => 'يمكنك تعديل هذا الطلب لأنه لا يزال معلقاً',
+
+    // Maintenance Requests specific translations
+    'maintenance_request_list' => 'قائمة طلبات الصيانة',
+    'add_new' => 'إضافة جديد',
+    'urgent' => 'عاجل',
+    'normal' => 'عادي',
+    'new' => 'جديد',
+    'in_progress' => 'قيد التنفيذ',
+    'completed' => 'مكتمل',
+    'transferred' => 'تم التحويل',
+    'no_maintenance_requests' => 'لا توجد طلبات صيانة',
 ]; 
