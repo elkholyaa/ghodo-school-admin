@@ -49,7 +49,7 @@
                 
                 <div class="card-body table-responsive p-0">
                     @if($materialRequests->count() > 0)
-                        <table class="table table-hover text-nowrap">
+                        <table class="table table-hover text-nowrap material-table">
                             <thead>
                                 <tr>
                                     <th>{{ __('messages.ID') }}</th>

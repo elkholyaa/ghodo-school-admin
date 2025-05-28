@@ -246,3 +246,149 @@ html[dir="rtl"] .mr-auto {
         min-height: 38px;
     }
 }
+
+/* Ensure maintenance table uses full width and columns don't shrink */
+.maintenance-table {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+.maintenance-table th, .maintenance-table td {
+    white-space: nowrap;
+}
+
+/* Ensure table containers use full width */
+.card-body.table-responsive {
+    overflow-x: auto;
+}
+
+/* On desktop, prevent unnecessary scrolling */
+@media (min-width: 768px) {
+    .card-body.table-responsive {
+        overflow-x: visible;
+    }
+    
+    .maintenance-table {
+        min-width: 100%;
+    }
+}
+
+/* Material request table styling */
+.material-table {
+    width: 100% !important;
+    table-layout: auto !important;
+}
+
+.material-table th, .material-table td {
+    white-space: nowrap;
+}
+
+/* Fix container width for Arabic content */
+.container-fluid {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 100%;
+}
+
+/* Remove unnecessary padding in content area */
+.content-wrapper .content {
+    padding: 0;
+}
+
+/* Fix card display for RTL tables */
+.card {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Ensure table containers use full width */
+.card-body.table-responsive {
+    overflow-x: auto;
+    padding: 0 !important; /* Remove padding inside table container */
+}
+
+/* On desktop, prevent unnecessary scrolling */
+@media (min-width: 768px) {
+    .card-body.table-responsive {
+        overflow-x: visible;
+    }
+    
+    .maintenance-table, .material-table {
+        min-width: 100%;
+    }
+    
+    /* Ensure table rows use full width */
+    .maintenance-table tr, .material-table tr {
+        width: 100%;
+        display: table-row;
+    }
+    
+    /* Ensure columns take appropriate space */
+    .maintenance-table th, .maintenance-table td,
+    .material-table th, .material-table td {
+        padding: 0.75rem;
+    }
+}
+
+/* Better RTL alignment for content headers */
+html[dir="rtl"] .content-header h1 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Fix breadcrumb alignment in RTL */
+html[dir="rtl"] .breadcrumb {
+    justify-content: flex-start;
+    padding: 0;
+}
+
+/* Better spacing for RTL content */
+html[dir="rtl"] .content-header {
+    padding: 15px 0;
+}
+
+/* Fix table header alignment */
+html[dir="rtl"] th {
+    text-align: right;
+}
+
+/* Fix table cell alignment and padding */
+html[dir="rtl"] td {
+    text-align: right;
+    vertical-align: middle;
+}
+
+/* Fix badge display in tables */
+html[dir="rtl"] .badge {
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+/* Fix action buttons alignment */
+html[dir="rtl"] .btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Fix card header layout */
+html[dir="rtl"] .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+html[dir="rtl"] .card-header .card-title {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+/* Fix table header appearance */
+.maintenance-table th, .material-table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
