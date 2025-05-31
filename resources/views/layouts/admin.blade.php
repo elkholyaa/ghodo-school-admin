@@ -242,15 +242,13 @@
                             </button>
                         </div>
                     @endif
-                </div><!-- /.container-fluid -->
+                </div>
             </div>
             <!-- /.content-header -->
 
             <!-- Main content -->
             <section class="content">
-                <div class="container-fluid px-0">
-                    @yield('content')
-                </div><!-- /.container-fluid -->
+                @yield('content')
             </section>
             <!-- /.content -->
         </div>
